@@ -1,18 +1,16 @@
 const Calificacion = require('../models/calificacion.model.js');
 
-exports.create = (req, res) => {
+exports.finish = (req, res) => {
     if (!req.body) {
       res.status(400).send({
         message: "Content can not be empty!"
       });
     }
     const calificacion = new Calificacion({
-        idCalificacion: req.body.idCalificacion,
-        Seleccion:req.body.Seleccion,
-        Dato:req.body.Dato
+        Data:req.body.Data
     });
   
-    Calificacion.create(calificacion, (err, data) => {
+    Calificacion.finish(calificacion, (err, data) => {
       if (err)
         res.status(500).send({
           message:
@@ -42,7 +40,7 @@ exports.create = (req, res) => {
         message: "Content can not be empty!"
       });
     }
-  
+
     console.log(req.body);
   
     Calificacion.updateById(

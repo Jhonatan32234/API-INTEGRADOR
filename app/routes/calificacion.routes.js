@@ -17,9 +17,9 @@ const apiLimiter = rateLimit({
 router.use(apiLimiter);
 
 // Definir las rutas específicas de actividad
-router.post('/create',verifyToken.verifyToken, calificacion.create);
+router.post('/finishCut',verifyToken.verifyToken, calificacion.finish);
 router.get('/all',verifyToken.verifyToken, calificacion.findAll);
-router.put('/:idCalificacion',verifyToken.verifyToken, calificacion.update);
+router.put('/update',verifyToken.verifyToken, calificacion.update);
 router.delete('/:idCalificacion',verifyToken.verifyToken, calificacion.delete);
 
 module.exports = router;
