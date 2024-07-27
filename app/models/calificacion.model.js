@@ -85,8 +85,8 @@ Calificacion.getAll = (nombre, result) => {
 
 Calificacion.updateById = (id, calificacion, result) => {
     sql.query(
-     ` UPDATE calificacion SET ${calificacion.seleccion}=? WHERE idCalificacion = ?`,
-      [calificacion.dato, id],
+     ` UPDATE calificacion SET ${calificacion.Corte}=? WHERE idCalificacion = ?`,
+      [calificacion.Calificacion, id],
       (err, res) => {
         if (err) {
           console.log("error: ", err);

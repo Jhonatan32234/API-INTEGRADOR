@@ -40,12 +40,11 @@ exports.finish = (req, res) => {
         message: "Content can not be empty!"
       });
     }
-
     console.log(req.body);
   
     Calificacion.updateById(
       req.params.idCalificacion,
-      new Calificacion(req.body),
+      req.body,
       (err, data) => {
         if (err) {
           if (err.kind === "not_found") {
