@@ -61,16 +61,10 @@ GROUP BY
             
   })
 }
-Calificacion.getAll = (nombre, result) => {
-    let query = `select alumnos.idAlumno, alumnos.NombreAlumno ,alumnos.Apellidos,
-     calificacion.Corte1 ,calificacion.Corte2,calificacion.Corte3 ,calificacion.Calificacion,
-     calificacion.Reprobado from alumnos inner join calificacion on
-      alumnos.idAlumno = calificacion.idCalificacion`;
+Calificacion.getAll = (indice, result) => {
+    let query = `CALL UpdateAndSelectCalificaciones(?, ?);`;
   
-    if (nombre) {
-      query += ` WHERE Nombre LIKE '%${nombre}%'`;
-    }
-    sql.query(query, (err, res) => {
+    sql.query(query,[indice.Grupo,indice.Materia], (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(null, err);

@@ -21,9 +21,9 @@ exports.finish = (req, res) => {
   };
 
   exports.findAll = (req, res) => {
-    const nombre = req.query.Nombre;
-  
-    Calificacion.getAll(nombre, (err, data) => {
+
+  const indice = req.body
+    Calificacion.getAll(indice, (err, data) => {
       if (err)
         res.status(500).send({
           message:

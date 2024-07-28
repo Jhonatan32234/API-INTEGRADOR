@@ -44,7 +44,7 @@ exports.create = (req, res) => {
       });
     }
   
-    console.log(req.body);
+    console.log(req.body.Materias);
   
     Grupo.updateById(
       req.params.idGrupo,

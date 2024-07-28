@@ -55,15 +55,16 @@ WHERE ga.idGMActividad = ${idGMA};`, (err, res) => {
 calActividad.getAll = (nombre, result) => {
   let query = 
 `SELECT 
-    idAlumno,
-    SUM(Calificacion) AS total,
-    COUNT(*) AS cantidad
+    gm.idGrupo,
+    g.NombreGrupo AS NombreGrupo,
+    gm.idMateria,
+    m.NombreMateria AS NombreMateria
 FROM 
-    gmaalumno
-WHERE 
-    Calificacion IS NOT NULL
-GROUP BY 
-    idAlumno;`;
+    grupomateria gm
+JOIN 
+    grupo g ON gm.idGrupo = g.idGrupo
+JOIN 
+    materia m ON gm.idMateria = m.idMateria;`;
 
   if (nombre) {
     query += ` WHERE NombreAlumno LIKE '%${nombre}%'`;

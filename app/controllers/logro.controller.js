@@ -12,7 +12,8 @@ exports.create = (req, res) => {
     const logro = new Logro({
       NombreLogro: req.body.NombreLogro,
       Bonificacion: req.body.Bonificacion,
-      Condicion: req.body.Condicion
+      Condicion: req.body.Condicion,
+      Corte:req.body.Corte
     });
   
     Logro.create(logro, (err, data) => {

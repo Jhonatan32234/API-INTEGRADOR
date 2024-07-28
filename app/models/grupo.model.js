@@ -169,10 +169,6 @@ Grupo.getAll = (nombre, result) => {
         result(null, formattedResult);
     });
 };
-
-
-  
-
   Grupo.remove = (id, result) => {
     sql.query("SELECT idGM FROM grupomateria WHERE idGrupo = ?", id, (err, res) => {
       if (err) {
@@ -181,15 +177,35 @@ Grupo.getAll = (nombre, result) => {
         return;
       }
       const idGM = res.map(data=>{return data.idGM})
-      console.log(idGM)
+      console.log(idGM+"ggaga")
+      if (idGM == 0) {
+        sql.query(`DELETE from grupo WHERE idGrupo = ${id}` , (errc, resc) => {
+          if (errc) {
+            console.log("error: ", errc);
+            result(null, errc);
+            return;
+          }
+          //console.log("deleted GRUPO with idGrupo: ", id);
+        });
+        
+      }
 
       sql.query(`SELECT idGMActividad FROM gmactividad WHERE idGM in(${idGM})`, (err2, res2) => {
       if (err2) {
         console.log("error: ", err2);
-        result(null, err2);
-        return;
+        return result(null, err2);
+    
       }
       if (res2 == 0) {
+        sql.query(`DELETE from calificacion WHERE idGM in( ${idGM})` , (err4, res4) => {
+          if (err4) {
+            console.log("error: ", err4);
+            result(null, err4);
+            return;
+          }
+          //console.log("deleted GRUPO with idGrupo: ", id);
+          result(null, res4);
+        });
         sql.query(`DELETE FROM grupomateria WHERE idGM in(${idGM})` , (err3, res3) => {
           if (err3) {
             console.log("error: ", err3);
@@ -202,8 +218,8 @@ Grupo.getAll = (nombre, result) => {
               result(null, err4);
               return;
             }
-            console.log("deleted GRUPO with idGrupo: ", id);
-            result(null, res4);
+            //console.log("deleted GRUPO with idGrupo: ", id);
+            
           });
         });
       }else{
@@ -220,6 +236,15 @@ Grupo.getAll = (nombre, result) => {
               result(null, err6);
               return;
             }
+            sql.query(`DELETE from calificacion WHERE idGM in (${idGM})` , (err4, res4) => {
+              if (err4) {
+                console.log("error: ", err4);
+                result(null, err4);
+                return;
+              }
+              //console.log("deleted GRUPO with idGrupo: ", id);
+              result(null, res4);
+            });
             sql.query(`DELETE from grupomateria WHERE idGM in(${idGM})` , (err7, res7) => {
               if (err7) {
                 console.log("error: ", err7);
@@ -233,7 +258,7 @@ Grupo.getAll = (nombre, result) => {
                   return;
                 }
                 console.log("deleted Grupo with idGrupo: ", id);
-                result(null, res8);               
+              
               });              
             });           
           });                  
@@ -246,32 +271,129 @@ Grupo.getAll = (nombre, result) => {
 
 
   Grupo.updateById = (id,grupo, result) => {
-
-    sql.query('UPDATE grupo SET NombreGrupo=? WHERE idGrupo = ?',
-       [grupo.nombreGrupo,id], (err, res) => {
+    sql.query("SELECT idGM FROM grupomateria WHERE idGrupo = ?", id, (err, res) => {
       if (err) {
         console.log("error: ", err);
-        result(err, null);
+        result(null, err);
         return;
       }
-      const idres = id;
-      console.log("updated Grupo: ", { id: id, ...grupo });
-      const idgrupo = id;
-      console.log(idgrupo);
-  
-      const values = JSON.parse(grupo.materias).map(grupo => [idgrupo, grupo.idMateria]);
-      console.log(values)
-      let query = 'INSERT INTO grupomateria (idGrupo,idMateria) values ';
-      query += values.map(value => '(?, ?)').join(', ');
-  
-      sql.query(query, values.flat(), (err, res) => {
-          if (err) {
-          console.log("error: ", err);
-          result(err, null);
-          return;
-        }
-        result(null, { id: idres, ...grupo });
-      });
+      const idGM = res.map(data=>{return data.idGM})
+      console.log(idGM)
+
+      sql.query(`SELECT idGMActividad FROM gmactividad WHERE idGM in(${idGM})`, (err2, res2) => {
+      if (err2) {
+        console.log("error: ", err2);
+        result(null, err2);
+        return;
+      }
+      console.log(res2)
+      if (res2 == 0) {
+        sql.query(`DELETE from calificacion WHERE idGM = ${id}` , (err4, res4) => {
+          if (err4) {
+            console.log("error: ", err4);
+            result(null, err4);
+            return;
+          }
+          
+        });
+        sql.query(`DELETE FROM grupomateria WHERE idGM in(${idGM})` , (err3, res3) => {
+          if (err3) {
+            console.log("error: ", err3);
+            result(null, err3);
+            return;
+          }
+            sql.query('UPDATE grupo SET NombreGrupo=? WHERE idGrupo = ?',
+              [grupo.nombreGrupo,id], (errb, resb) => {
+             if (errb) {
+               console.log("error: ", errb);
+               result(errb, null);
+               return;
+             }
+             const idres = id;
+             console.log("updated Grupo: ", { id: id, ...grupo });
+             console.log(grupo);
+          
+             const values = JSON.parse(grupo.materias).map(grupo => [parseInt(id), grupo.idMateria]);
+             console.log(values)
+             let query = 'INSERT INTO grupomateria (idGrupo,idMateria) values ';
+             query += values.map(value => '(?, ?)').join(', ');
+             sql.query(query, values.flat(), (erra, resa) => {
+              if (erra) {
+              console.log("error: ", erra);
+              result(erra, null);
+              return;
+            }
+            //console.log("created conexion: ", { id: res.insertId, ...newGrupo });
+            console.log("updated calificacion: ", { id: id, ...grupo });
+           return result(null, { id: id, ...grupo });
+              });
+           });
+          });
+        
+      }else{
+        const idGMActividad = res2.map(data=>{return data.idGMActividad});
+        sql.query(`DELETE from gmaalumno WHERE idGMActividad in(${idGMActividad})` , (err5, res5) => {
+          if (err5) {
+            console.log("error: ", err5);
+            result(null, err5);
+            return;
+          }
+          sql.query(`DELETE from gmactividad WHERE idGMActividad in(${idGMActividad})` , (err6, res6) => {
+            if (err6) {
+              console.log("error: ", err6);
+              result(null, err6);
+              return;
+            }
+            sql.query(`DELETE from calificacion WHERE idGM = ${id}` , (err4, res4) => {
+              if (err4) {
+                console.log("error: ", err4);
+                result(null, err4);
+                return;
+              }
+             
+            });
+            sql.query(`DELETE from grupomateria WHERE idGM in(${idGM})` , (err7, res7) => {
+              if (err7) {
+                console.log("error: ", err7);
+                result(null, err7);
+                return;
+              }
+            
+                sql.query('UPDATE grupo SET NombreGrupo=? WHERE idGrupo = ?',
+                  [grupo.nombreGrupo,id], (err, res) => {
+                 if (err) {
+                   console.log("error: ", err);
+                   result(err, null);
+                   return;
+                 }
+                 const idres = id;
+                 const idgrupo = id;
+                 console.log(idgrupo);
+                 const values = JSON.parse(grupo.materias).map(grupo => [idgrupo, grupo.idMateria]);
+                 console.log(values)
+                 let query = 'INSERT INTO grupomateria (idGrupo,idMateria) values ';
+                 query += values.map(value => '(?, ?)').join(', ');
+                 sql.query(query, values.flat(), (erra, resa) => {
+                  if (erra) {
+                  console.log("error: ", erra);
+                  result(erra, null);
+                  return;
+                }
+                //console.log("created conexion: ", { id: res.insertId, ...newGrupo });
+              return  result(null, { id: id, ...grupo });
+              });
+             
+                 
+               });            
+                           
+            });           
+          });                  
+        });              
+      }     
     });
+    });
+    
+    
+    
   };
   module.exports = Grupo;

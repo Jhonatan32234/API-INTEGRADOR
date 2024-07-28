@@ -4,6 +4,7 @@ const Logro = function(logro){
     this.nombreLogro = logro.NombreLogro;
     this.bonificacion = logro.Bonificacion;
     this.condicion = logro.Condicion;
+    this.corte = logro.Corte;
 }
 
 Logro.create = (newLogro,result)=>{
@@ -57,8 +58,8 @@ Logro.getAll = (nombre, result) => {
   
   Logro.updateById = (id, logro, result) => {
     sql.query(
-      "UPDATE logro SET NombreLogro = ?, Bonificacion = ?, Condicion = ? WHERE idLogro = ?",
-      [logro.nombreLogro, logro.bonificacion, logro.condicion, id],
+      "UPDATE logro SET NombreLogro = ?, Bonificacion = ?, Condicion = ?, Corte = ? WHERE idLogro = ?",
+      [logro.nombreLogro, logro.bonificacion,logro.corte, logro.condicion, id],
       (err, res) => {
         if (err) {
           console.log("error: ", err);

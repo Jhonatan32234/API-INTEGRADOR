@@ -69,6 +69,13 @@ Materia.getAll = (nombre, result) => {
         return;
       }
       if (res3 == 0) {
+        sql.query(`DELETE from calificacion WHERE idGM in(${idGM})`,id , (err2, res2) => {
+          if (err2) {
+            console.log("error: ", err2);
+            result(null, err2);
+            return;
+          }
+        });
         sql.query(`DELETE FROM grupomateria where idGM in(${idGM})` , (err4, res4) => {
           if (err4) {
             console.log("error: ", err4);
@@ -100,6 +107,13 @@ Materia.getAll = (nombre, result) => {
               result(null, err7);
               return;
             }
+            sql.query(`DELETE from calificacion WHERE idGM in(${idGM})`,id , (err2, res2) => {
+              if (err2) {
+                console.log("error: ", err2);
+                result(null, err2);
+                return;
+              }
+            });
             sql.query(`DELETE FROM grupomateria where idGM in(${idGM})` , (err8, res8) => {
               if (err8) {
                 console.log("error: ", err8);
